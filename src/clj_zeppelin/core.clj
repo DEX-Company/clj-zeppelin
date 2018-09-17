@@ -3,6 +3,11 @@
             [clojure.walk :refer [keywordize-keys stringify-keys]]
             [org.httpkit.client :as ht]))
 
+(defn- kwdize-resp
+  "keywordize the response when successful"
+  [resp]
+  (-> resp :body json/read-str clojure.walk/keywordize-keys))
+
 (defn list-notes
   "
   List the existing notes
@@ -14,7 +19,7 @@
                            :method :get})]
     (if (:error resp)
       (throw (ex-info " error listing notes " resp))
-      (-> resp :body json/read-str clojure.walk/keywordize-keys))))
+      (kwdize-resp resp))))
 
 ;;(list-notes "http://localhost:8081")
 (def nbserver "http://localhost:8081")
@@ -52,7 +57,7 @@
                            :method :delete})]
     (if (:error resp)
       (throw (ex-info " error deleting note " note-id ", response:  " resp))
-      (-> resp :body json/read-str clojure.walk/keywordize-keys))))
+      (kwdize-resp resp))))
 
 ;;(delete-note! nbserver "2DRF4MVSW")
 
@@ -77,6 +82,6 @@
                            :method :post})]
     (if (:error resp)
       (throw (ex-info " error running note " resp))
-      (-> resp :body json/read-str clojure.walk/keywordize-keys))))
+      (kwdize-resp resp))))
 
 ;;(run-all-paragraphs nbserver "2DTJSPSWV")
