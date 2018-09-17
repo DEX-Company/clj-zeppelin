@@ -1,6 +1,6 @@
 # clj-zeppelin
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure library for managing [Zeppelin](https://zeppelin.apache.org) notebooks using the Zeppelin [Notebook REST API](https://zeppelin.apache.org/docs/0.8.0/usage/rest_api/notebook.html).
 
 ## Usage
 
@@ -8,7 +8,6 @@ FIXME
 
 ## License
 
-Copyright © 2018 FIXME
+Copyright © 2018 Dex
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Apache 2.0 License
