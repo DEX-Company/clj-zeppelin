@@ -8,6 +8,13 @@
   [resp]
   (-> resp :body json/read-str clojure.walk/keywordize-keys))
 
+(defn json-req
+  "create a json string from a clojure map"
+  [payload]
+  (-> payload 
+      stringify-keys
+      json/write-str))
+
 (defn list-notes
   "
   List the existing notes
@@ -85,3 +92,28 @@
       (kwdize-resp resp))))
 
 ;;(run-all-paragraphs nbserver "2DTJSPSWV")
+
+(defn create-paragraph!
+  "Creates a new paragraph, added to note-id.
+  https://zeppelin.apache.org/docs/0.8.0/usage/rest_api/notebook.html#create-a-new-paragraph
+  "
+  [notebook-server-url note-id paragraph-data]
+  (let [resp @(ht/request {:url (str notebook-server-url "/api/notebook/" note-id "/paragraph")
+                           :method :post
+                           :body paragraph-data})]
+    (if (:error resp)
+      (throw (ex-info " error creating paragraph " resp))
+      (kwdize-resp resp))))
+
+#_(create-paragraph! nbserver
+                   "2DTMA8RR9"
+                   (-> {:title "intro"
+                        :text "%md\n Hello paragraph \n"}
+                       json-req))
+;;create first paragraph instead of appending to the last one 
+#_(create-paragraph! nbserver
+                   "2DTMA8RR9"
+                   (-> {:title "intro"
+                        :text "%md\n Hello first paragraph \n"
+                        :index 0}
+                       json-req))
