@@ -56,3 +56,27 @@
 
 ;;(delete-note! nbserver "2DRF4MVSW")
 
+(defn import-note!
+  "
+  Imports a note
+  https://zeppelin.apache.org/docs/0.8.0/usage/rest_api/notebook.html#import-a-note
+
+  Returns the id of the imported note
+  "
+  []
+  nil)
+
+(defn run-all-paragraphs
+  "runs all the paragraphs
+
+  https://zeppelin.apache.org/docs/0.8.0/usage/rest_api/notebook.html#run-all-paragraphs
+  Returns status as a map
+  "
+  [notebook-server-url note-id]
+  (let [resp @(ht/request {:url (str notebook-server-url "/api/notebook/job/" note-id)
+                           :method :post})]
+    (if (:error resp)
+      (throw (ex-info " error running note " resp))
+      (-> resp :body json/read-str clojure.walk/keywordize-keys))))
+
+;;(run-all-paragraphs nbserver "2DTJSPSWV")
