@@ -151,3 +151,40 @@
            (get-paragraph-info nbserver note-id para-id)))
 
 ;(-> res )
+
+(defn run-paragraph-async
+  "runs a paragraph asynchronously
+  https://zeppelin.apache.org/docs/0.8.0/usage/rest_api/notebook.html#run-a-paragraph-asynchronously
+
+  Takes as arguments the notebook server, the note id and paragraph id.
+
+  Returns immediately, and the status is usually PENDING"
+  [notebook-server-url note-id paragraph-id]
+  (let [resp @(ht/request {:url (str notebook-server-url "/api/notebook/job/" note-id "/" paragraph-id)
+                           :method :post})]
+    (if (:error resp)
+      (throw (ex-info " error running paragraph " resp))
+      (-> resp kwdize-resp :body))))
+
+(defn run-paragraph-sync
+  "runs a paragraph synchronously
+  https://zeppelin.apache.org/docs/0.8.0/usage/rest_api/notebook.html#run-a-paragraph-synchronously
+
+  Takes as arguments the notebook server, the note id and paragraph id.
+
+  Returns after the paragraph completes execution "
+  [notebook-server-url note-id paragraph-id]
+  (let [resp @(ht/request {:url (str notebook-server-url "/api/notebook/run/" note-id "/" paragraph-id)
+                           :method :post})]
+    (if (:error resp)
+      (throw (ex-info " error running paragraph " resp))
+      (-> resp kwdize-resp :body))))
+
+#_(let [note-id (create-note! nbserver (note "new5"
+                                           [(paragraph "title" :md ["hello new para"])]))
+      para-id (create-paragraph! nbserver note-id 
+                                 (paragraph "new1" :sh ["mkdir output2"]))
+      res (run-paragraph-sync nbserver note-id para-id)
+      ]
+  (get-paragraph-info nbserver note-id para-id))
+
