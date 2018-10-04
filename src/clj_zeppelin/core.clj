@@ -1,7 +1,7 @@
 (ns clj-zeppelin.core
   (:require [clojure.data.json :as json]
             [clojure.walk :refer [keywordize-keys stringify-keys]]
-            [clj-zeppelin.note :refer [paragraph note finalize]]
+            [clj-zeppelin.note :refer [paragraph-raw note finalize]]
             [org.httpkit.client :as ht]))
 
 (defn- kwdize-resp

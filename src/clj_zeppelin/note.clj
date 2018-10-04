@@ -6,8 +6,7 @@
 (defn paragraph-raw
   ([title magic text]
    {:title title :text (str "%" (name magic) "\n"
-                            (clojure.string/join "\n" text))})
-  )
+                            (clojure.string/join "\n" text))}))
 
 (defn note
   [nbname paragraphs]

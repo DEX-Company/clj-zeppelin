@@ -9,4 +9,6 @@
                  [http-kit "2.2.0"]
                  ;;logging
                  [com.taoensso/timbre "4.10.0"]
-                 ])
+                 ]
+
+  :profiles {:test {:dependencies [[docker-fixture "0.1.2"]]}})
