@@ -1,8 +1,9 @@
 (ns clj-zeppelin.core-test
   (:require [clojure.test :refer :all]
-            [docker.fixture :as docker]
+           [docker.fixture :as docker]
             [org.httpkit.client :as http]
-            [clj-zeppelin.core :refer :all]))
+            [clj-zeppelin.core :refer :all]
+                        ))
 
 ;; prove interaction with fixture by init-fn
 (def fixture-response (atom nil))
@@ -33,3 +34,15 @@
     (println " list notes " num-notes)
     (is (> num-notes 0))))
 
+
+
+(deftest create-note-test
+  (def outp (trial-check-note)) 
+  (is (= 1 outp))
+         )
+  
+  
+  
+  
+  
+  

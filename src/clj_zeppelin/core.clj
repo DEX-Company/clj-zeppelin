@@ -23,6 +23,7 @@
 
   "
   [notebook-server-url]
+ 
   (let [resp @(ht/request {:url (str notebook-server-url "/api/notebook")
                            :method :get})]
     (if (:error resp)
@@ -30,7 +31,10 @@
       (kwdize-resp resp))))
 
 ;;(list-notes "http://localhost:8081")
-  (def nbserver "http://localhost:8080")
+
+ ;;**** (def nbserver "http://localhost:8080")
+ 
+ (def nbserver "http://192.168.0.182:8080")
 (defn create-note!
   "
   create a new note
@@ -187,4 +191,22 @@
       res (run-paragraph-sync nbserver note-id para-id)
       ]
   (get-paragraph-info nbserver note-id para-id))
+
+
+(defn trial-check-note []
+    (def nbserver1 "http://localhost:8080")
+    (def note-id (create-note! nbserver1 (-> {:name "trial clojure note"})))
+    (def ret-ids (list-notes nbserver1)) 
+    (def result 0)
+     (loop [cnt (count (get-in ret-ids [:body]))]
+       (when (> cnt 0)
+       (if (= note-id (get-in ret-ids [:body cnt :id]))
+            (do
+             (def result 1))
+            (do
+             (recur (dec cnt))))))
+ result)
+
+
+
 
