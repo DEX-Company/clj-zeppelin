@@ -193,20 +193,3 @@
   (get-paragraph-info nbserver note-id para-id))
 
 
-(defn trial-check-note []
-    (def nbserver1 "http://localhost:8080")
-    (def note-id (create-note! nbserver1 (-> {:name "trial clojure note"})))
-    (def ret-ids (list-notes nbserver1)) 
-    (def result 0)
-     (loop [cnt (count (get-in ret-ids [:body]))]
-       (when (> cnt 0)
-       (if (= note-id (get-in ret-ids [:body cnt :id]))
-            (do
-             (def result 1))
-            (do
-             (recur (dec cnt))))))
- result)
-
-
-
-

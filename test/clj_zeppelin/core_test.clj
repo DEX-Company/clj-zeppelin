@@ -36,11 +36,14 @@
 
 
 
-(deftest create-note-test
-  (def outp (trial-check-note)) 
-  (is (= 1 outp))
-         )
-  
+(deftest trial-check-note
+    (def nbserver1 "http://localhost:8080")
+    (def note-id (create-note! nbserver1 (-> {:name "trial clojure note"})))
+    (def ret-ids (list-notes nbserver1)) 
+    (def inp (get-in ret-ids [:body]))
+    (def x (some #{note-id} (map :id inp)))
+    (is (= nil x))
+ )
   
   
   
