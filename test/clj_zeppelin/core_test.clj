@@ -1,6 +1,6 @@
 (ns clj-zeppelin.core-test
   (:require [clojure.test :refer :all]
-           [docker.fixture :as docker]
+            [docker.fixture :as docker]
             [org.httpkit.client :as http]
             [clj-zeppelin.core :refer :all]
                         ))
@@ -35,17 +35,12 @@
     (is (> num-notes 0))))
 
 
-
 (deftest trial-check-note
-    (def nbserver1 "http://localhost:8080")
-    (def note-id (create-note! nbserver1 (-> {:name "trial clojure note"})))
-    (def ret-ids (list-notes nbserver1)) 
-    (def inp (get-in ret-ids [:body]))
-    (def x (some #{note-id} (map :id inp)))
+    (let [nbserver1 "http://localhost:8080"
+     note-id (-> (create-note! nbserver1 (-> {:name "trial clojure note"})))
+     ret-ids (-> (list-notes nbserver1)) 
+     inp (-> (get-in ret-ids [:body]))
+     x (-> (some #{note-id} (map :id inp)))]
     (is (= nil x))
  )
-  
-  
-  
-  
-  
+ )
