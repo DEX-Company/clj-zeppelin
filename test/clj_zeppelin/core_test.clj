@@ -2,7 +2,8 @@
   (:require [clojure.test :refer :all]
             [docker.fixture :as docker]
             [org.httpkit.client :as http]
-            [clj-zeppelin.core :refer :all]))
+            [clj-zeppelin.core :refer :all]
+                        ))
 
 ;; prove interaction with fixture by init-fn
 (def fixture-response (atom nil))
@@ -33,3 +34,12 @@
     (println " list notes " num-notes)
     (is (> num-notes 0))))
 
+
+
+(deftest trial-check-note
+    (let [nbserver1 "http://localhost:8080"
+     note-id (-> (create-note! nbserver1 (-> {:name "trial clojure note"})))
+     x (-> (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body]))))]
+    (is (= nil x))
+ )
+ )

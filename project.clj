@@ -11,4 +11,5 @@
                  [com.taoensso/timbre "4.10.0"]
                  ]
 
-  :profiles {:test {:dependencies [[docker-fixture "0.1.2"]]}})
+  :profiles {:test {:dependencies [[docker-fixture "0.1.2"]]}}
+  )
