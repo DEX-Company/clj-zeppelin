@@ -35,12 +35,11 @@
     (is (> num-notes 0))))
 
 
+
 (deftest trial-check-note
     (let [nbserver1 "http://localhost:8080"
      note-id (-> (create-note! nbserver1 (-> {:name "trial clojure note"})))
-     ret-ids (-> (list-notes nbserver1)) 
-     inp (-> (get-in ret-ids [:body]))
-     x (-> (some #{note-id} (map :id inp)))]
+     x (-> (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body]))))]
     (is (= nil x))
  )
  )
