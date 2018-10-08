@@ -43,3 +43,14 @@
     (is (= nil x))
  )
  )
+
+(deftest delete-note-check
+    (let [nbserver1 "http://localhost:8080" 
+    sts ( -> (delete-note! nbserver1 "2DV3VJVRY"))
+    x ( -> (some #{"2DV3VJVRY"} (map :id (get-in (list-notes nbserver1) [:body]))))]
+    (is (= nil x))    
+ )
+ )
+
+
+
