@@ -1,16 +1,16 @@
 (ns clj-zeppelin.core-test
   (:require [clojure.test :refer :all]
-           ;; [docker.fixture :as docker]
+            [docker.fixture :as docker]
             [org.httpkit.client :as http]
             [clj-zeppelin.core :refer :all]
                         ))
 
 
 
- prove interaction with fixture by init-fn
+ ;;prove interaction with fixture by init-fn
 (def fixture-response (atom nil))
 
- easy http GET
+;; easy http GET
 (defn component-http-get
   ([host]
    (let [resp @(http/get (str "http://localhost:8080/api/notebook/"))]
@@ -24,7 +24,7 @@
                                   (reset! fixture-response
                                           (component-http-get (:host component))))}))
 
- did the init-fn interact with the fixture?
+ ;;did the init-fn interact with the fixture?
 (deftest test-fixture-init
   (let [resp (:status @fixture-response)]
     (println " got response " resp)
@@ -49,6 +49,7 @@
 (deftest test-create-note
   (let [note-id (create-note-helper nbserver1)
    x (some #{(get-in note-id [:created-note-id])} (get-in note-id [:retrieved-note-ids]))]
+    (println x)
     (is (not= nil x))))
 
 
