@@ -1,16 +1,16 @@
 (ns clj-zeppelin.core-test
   (:require [clojure.test :refer :all]
-            [docker.fixture :as docker]
+           ;; [docker.fixture :as docker]
             [org.httpkit.client :as http]
             [clj-zeppelin.core :refer :all]
                         ))
 
 
 
-;; prove interaction with fixture by init-fn
+ prove interaction with fixture by init-fn
 (def fixture-response (atom nil))
 
-;; easy http GET
+ easy http GET
 (defn component-http-get
   ([host]
    (let [resp @(http/get (str "http://localhost:8080/api/notebook/"))]
@@ -24,7 +24,7 @@
                                   (reset! fixture-response
                                           (component-http-get (:host component))))}))
 
-; did the init-fn interact with the fixture?
+ did the init-fn interact with the fixture?
 (deftest test-fixture-init
   (let [resp (:status @fixture-response)]
     (println " got response " resp)
@@ -39,23 +39,29 @@
 
 (def nbserver1 "http://localhost:8080")
 
-;;test-create-note
+(defn create-note-helper
+  [nbserver1]
+  (let [note-id (create-note! nbserver1  {:name "trial clojure note"})
+          ids (map :id (get-in (list-notes nbserver1) [:body]))]
+     {:created-note-id note-id :retrieved-note-ids ids})) 
+  
+ 
 (deftest test-create-note
-    (let [note-id (create-note! nbserver1 (-> {:name "trial clojure note"}))
-     x (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body])))]
-    (is (= nil x))
- )
- )
+  (let [note-id (create-note-helper nbserver1)
+   x (some #{(get-in note-id [:created-note-id])} (get-in note-id [:retrieved-note-ids]))]
+    (is (not= nil x))))
 
 
-;;delete note check 
 (deftest delete-note-check
-  (let [note-id (create-note! nbserver1 (-> {:name "trial clojure note"}))
-     x (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body])))]
-    (if (not (= nil x))
-      (do
-        (let [sts (delete-note! nbserver1 note-id)
-         y (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body])))]
-         (is (= nil y))))
-    )))
+  (let [ret-ids (create-note-helper nbserver1)
+   x (some #{(get-in ret-ids [:created-note-id])} (get-in ret-ids [:retrieved-note-ids]))]
+       (if (not (= nil x))
+          (let [sts (delete-note! nbserver1 (get-in ret-ids [:created-note-id]))
+            y (some #{(get-in ret-ids [:created-note-id])} (get-in ret-ids [:retrieved-note-ids]))]
+            (is (= nil y))))))
+
+
+
+
+
 
