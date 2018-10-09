@@ -48,7 +48,7 @@
  )
 
 
-;;delete note check correct pgm
+;;delete note check 
 (deftest delete-note-check
   (let [note-id (create-note! nbserver1 (-> {:name "trial clojure note"}))
      x (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body])))]
@@ -56,6 +56,6 @@
       (do
         (let [sts (delete-note! nbserver1 note-id)
          y (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body])))]
-         (not (= nil y))))
+         (is (= nil y))))
     )))
 
