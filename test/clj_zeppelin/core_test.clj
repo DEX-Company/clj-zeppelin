@@ -5,7 +5,9 @@
             [clj-zeppelin.core :refer :all]
                         ))
 
-;; prove interaction with fixture by init-fn
+
+
+ ;;prove interaction with fixture by init-fn
 (def fixture-response (atom nil))
 
 ;; easy http GET
@@ -22,7 +24,7 @@
                                   (reset! fixture-response
                                           (component-http-get (:host component))))}))
 
-;; did the init-fn interact with the fixture?
+ ;;did the init-fn interact with the fixture?
 (deftest test-fixture-init
   (let [resp (:status @fixture-response)]
     (println " got response " resp)
@@ -35,11 +37,31 @@
     (is (> num-notes 0))))
 
 
+(def nbserver1 "http://localhost:8080")
 
-(deftest trial-check-note
-    (let [nbserver1 "http://localhost:8080"
-     note-id (-> (create-note! nbserver1 (-> {:name "trial clojure note"})))
-     x (-> (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body]))))]
-    (is (= nil x))
- )
- )
+(defn create-note-helper
+  [nbserver1]
+  (let [note-id (create-note! nbserver1  {:name "trial clojure note"})
+          ids (map :id (get-in (list-notes nbserver1) [:body]))]
+     {:created-note-id note-id :retrieved-note-ids ids})) 
+  
+ 
+(deftest test-create-note
+  (let [note-id (create-note-helper nbserver1)
+   x (some #{(:created-note-id note-id)} (:retrieved-note-ids note-id))]
+   (is x)))
+
+
+(deftest delete-note-check
+  (let [ret-ids (create-note-helper nbserver1)
+   note-id (:created-note-id ret-ids)
+   return-ids (:retrieved-note-ids ret-ids)
+   x (some #{note-id} return-ids)]
+       (if (not (= nil x))
+          (let [sts (delete-note! nbserver1 note-id)             
+            y (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body])))]
+            (is (nil? y))))))
+
+
+
+
