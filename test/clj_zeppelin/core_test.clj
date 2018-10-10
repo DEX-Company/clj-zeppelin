@@ -48,20 +48,19 @@
  
 (deftest test-create-note
   (let [note-id (create-note-helper nbserver1)
-   x (some #{(get-in note-id [:created-note-id])} (get-in note-id [:retrieved-note-ids]))]
-    (println x)
-    (is (not= nil x))))
+   x (some #{(:created-note-id note-id)} (:retrieved-note-ids note-id))]
+   (is x)))
 
 
 (deftest delete-note-check
   (let [ret-ids (create-note-helper nbserver1)
-   x (some #{(get-in ret-ids [:created-note-id])} (get-in ret-ids [:retrieved-note-ids]))]
+   note-id (:created-note-id ret-ids)
+   return-ids (:retrieved-note-ids ret-ids)
+   x (some #{note-id} return-ids)]
        (if (not (= nil x))
-          (let [sts (delete-note! nbserver1 (get-in ret-ids [:created-note-id]))
-            y (some #{(get-in ret-ids [:created-note-id])} (get-in ret-ids [:retrieved-note-ids]))]
-            (is (= nil y))))))
-
-
+          (let [sts (delete-note! nbserver1 note-id)             
+            y (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body])))]
+            (is (nil? y))))))
 
 
 
