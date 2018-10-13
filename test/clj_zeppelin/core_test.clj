@@ -42,70 +42,66 @@
 (defn create-note-helper
   [nbserver1]
   (let [note-id (create-note! nbserver1  {:name "clojure note12"})
-           ids (map :id (get-in (list-notes nbserver1) [:body]))]
-     {:created-note-id note-id :retrieved-note-ids ids})) 
+       ids (map :id (get-in (list-notes nbserver1) [:body]))]
+   {:created-note-id note-id :retrieved-note-ids ids})) 
 
- 
+;;delete-note used in fixture function
+(defn delete-note
+  []
+(let [list-id (list-notes nbserver1) 
+     ids-to-delete  (->> (get-in list-id [:body])
+                                    ;;filter those that have :name = clojure note 12
+                                  (filter #(= (:name %) "clojure note12"))
+                                    ;;get the ids of those that pass the filter.
+                                   (map :id))]
+ (doseq  [ids1 ids-to-delete] (delete-note! nbserver1 ids1))))
+
+;;test-create-note
 (deftest test-create-note
   (let [note-id (create-note-helper nbserver1)
    x (some #{(:created-note-id note-id)} (:retrieved-note-ids note-id))]
-   (is x)))
+      (testing "note-id created or not"
+        (is x))))
 
-
-(deftest delete-note-check
+;;test-delete-note
+(deftest test-delete-note
   (let [ret-ids (create-note-helper nbserver1)
    note-id (:created-note-id ret-ids)
    return-ids (:retrieved-note-ids ret-ids)
    x (some #{note-id} return-ids)]
-       (if x
+    (testing "note-id present in the returned list of ids or absent"
+       (is x))
           (let [sts (delete-note! nbserver1 note-id)             
             y (some #{note-id} (map :id (get-in (list-notes nbserver1) [:body])))]
-            (is (nil? y)))
-       (println "note-id not present in the returned list of ids"))))
+              (testing "note-id deleted or not deleted"
+                (is (nil? y)))
+       )))
 
-
-;;test for create paragraph
+;;test-create-paragraph
 (deftest test-create-para
   (let [ret-ids (create-note-helper nbserver1)
    note-id (:created-note-id ret-ids)
    return-ids (:retrieved-note-ids ret-ids)
    x (some #{note-id} return-ids)]
-       (if x
-         (let [para-id (create-paragraph! nbserver1 note-id (-> {:title "intro"
-                                                                 :text "\n Hello user"}))]          
-           (if para-id
-             (let [sts (get-paragraph-status nbserver1 note-id para-id)]
-                (if (= "READY" (:status sts))
-                 (let [res (:text (get-paragraph-info nbserver1 note-id para-id))]
-                  (is (= "\n Hello user"  res)))
-                (println "incorrect paragraph status")))
-            (println "paragraph id not returned")))
-         (println "note-id not present in the returned list of ids"))))
-
-
-;;delete-note used in fixture function
-(defn delete-note
-  [nbserbver1]
-  (let [list-id (list-notes nbserver1)
-     ids (map :id (get-in (list-notes nbserver1) [:body]))
-     names (map :name (get-in (list-notes nbserver1) [:body]))
-     idx (map first 
-              (filter #(= (second %) "clojure note12")
-                      (map-indexed vector names)))
-     cnt (count idx)]
-       (loop [ct cnt indx 0]
-         (if (> ct 0)
-           (let [x (some #{(nth ids (nth idx indx))} ids)]
-             (delete-note! nbserver1 x)
-             (recur (dec ct) (inc indx)))
-           ))))
+     (testing "note id created or not"
+       (is x))
+       (let [para-id (create-paragraph! nbserver1 note-id (-> {:title "intro"
+                                                               :text "\n Hello user"}))]          
+        (testing "paragraoh-id returned or not"
+          (is para-id))
+          (let [sts (get-paragraph-status nbserver1 note-id para-id)]
+          (testing "paragraph status check"
+            (is (= "READY" (:status sts))))
+            (let [res (:text (get-paragraph-info nbserver1 note-id para-id))]
+            (testing "paragraph content check"
+              (is (= "\n Hello user"  res))))))))
+                
               
-
 (defn create-delete-fixture
 [f]
 (create-note-helper nbserver1)
 (f)
-(delete-note nbserver1)
+(delete-note)
 )
 
 (clojure.test/use-fixtures :once create-delete-fixture)
