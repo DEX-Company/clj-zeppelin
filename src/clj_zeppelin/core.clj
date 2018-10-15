@@ -164,9 +164,11 @@
   [notebook-server-url note-id paragraph-id]
   (let [resp @(ht/request {:url (str notebook-server-url "/api/notebook/job/" note-id "/" paragraph-id)
                            :method :post})]
+    
     (if (:error resp)
       (throw (ex-info " error running paragraph " resp))
-      (-> resp kwdize-resp :body))))
+;      (-> resp kwdize-resp :body)
+      (-> resp kwdize-resp :status))))
 
 (defn run-paragraph-sync
   "runs a paragraph synchronously
