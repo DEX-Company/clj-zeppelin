@@ -31,8 +31,6 @@
       (kwdize-resp resp))))
 
 ;;(list-notes "http://localhost:8081")
-
- ;;**** (def nbserver "http://localhost:8080")
  
  (def nbserver "http://192.168.0.182:8080")
 (defn create-note!
