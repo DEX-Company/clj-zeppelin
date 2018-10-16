@@ -91,7 +91,7 @@
     {:paragraph-id para-id :paragraph-status para-status}))
 
 
-;test-create-paragraph
+;;test-create-paragraph
 (deftest test-create-para
   (let [ret-ids (create-note-helper nbserver1)
    note-id (:created-note-id ret-ids)
@@ -130,7 +130,27 @@
               (testing "check status of run paragraph asynchronously"
                  (is (= "OK" async-sts)))
               ))))
-      
+ 
+
+;;test-run-paragraph-synchronously
+(deftest test-para-sync
+    (let [ret-ids (create-note-helper nbserver1)
+   note-id (:created-note-id ret-ids)
+   return-ids (:retrieved-note-ids ret-ids)
+   x (some #{note-id} return-ids)]
+     (testing "note id created or not"
+       (is x))
+       (let [para-id-sts (create-para-helper note-id)
+           para-id (:paragraph-id para-id-sts)
+           para-status (:paragraph-status para-id-sts)]
+         (testing "paragraph-id returned or not"
+          (is para-id))
+        (testing "paragraph status check"
+            (is (= "READY" (:status para-status))))
+        (let [sync-sts (run-paragraph-sync nbserver1 note-id para-id)]
+              (testing "check status of run paragraph synchronously"
+                 (is (= "SUCCESS" (:code sync-sts))))))))
+
               
 (defn create-delete-fixture
 [f]
