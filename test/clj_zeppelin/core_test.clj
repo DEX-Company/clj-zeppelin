@@ -1,6 +1,6 @@
 (ns clj-zeppelin.core-test
   (:require [clojure.test :refer :all]
-            [docker.fixture :as docker]
+;            [docker.fixture :as docker]
             [org.httpkit.client :as http]
             [clj-zeppelin.core :refer :all]
             ))
@@ -17,18 +17,18 @@
      (println " calling get, resp is " (:body resp) " host " host)
      resp)))
 
-(use-fixtures :once
-  (docker/new-fixture {:cmd ["docker" "run" "-d" "-p" "8080:8080"  "apache/zeppelin:0.8.0"]
-                       :sleep 20000
-                       :init-fn (fn [component]
-                                  (reset! fixture-response
-                                          (component-http-get (:host component))))}))
-
- ;;did the init-fn interact with the fixture?
-(deftest test-fixture-init
-  (let [resp (:status @fixture-response)]
-    (println " got response " resp)
-    (is (= 200 resp))))
+;(use-fixtures :once
+;  (docker/new-fixture {:cmd ["docker" "run" "-d" "-p" "8080:8080"  "apache/zeppelin:0.8.0"]
+;                       :sleep 20000
+;                       :init-fn (fn [component]
+;                                  (reset! fixture-response
+;                                          (component-http-get (:host component))))}))
+;
+; ;;did the init-fn interact with the fixture?
+;(deftest test-fixture-init
+;  (let [resp (:status @fixture-response)]
+;    (println " got response " resp)
+;    (is (= 200 resp))))
 
 (deftest test-list-notes
   (let [resp (list-notes "http://localhost:8080")
@@ -86,7 +86,7 @@
 (defn create-para-helper
   [note-id]
   (let [para-id (create-paragraph! nbserver1 note-id (-> {:title "intro"
-                                                               :text "%md\n Hello user"}))
+                                                          :text  (+ 10 10)}))
         para-status (get-paragraph-status nbserver1 note-id para-id)]
     {:paragraph-id para-id :paragraph-status para-status}))
 
@@ -108,10 +108,9 @@
             (is (= "READY" (:status para-status))))
         (let [res (:text (get-paragraph-info nbserver1 note-id para-id))]
             (testing "paragraph content check"
-              (is (= "%md\n Hello user"  res)))))))
-       
+              (is (= "20"  res)))))))
+     
   
-
 ;;test-run-paragraph-asynchronously
 (deftest test-para-async
   (let [ret-ids (create-note-helper nbserver1)
@@ -128,10 +127,10 @@
         (testing "paragraph status check"
             (is (= "READY" (:status para-status))))
             (let [async-sts (run-paragraph-async nbserver1 note-id para-id)]
-              (testing "check status of run paragraph aynchronously"
-                 (is (= "OK" async-sts)))))))
-
-
+              (testing "check status of run paragraph asynchronously"
+                 (is (= "OK" async-sts)))
+              ))))
+      
               
 (defn create-delete-fixture
 [f]
