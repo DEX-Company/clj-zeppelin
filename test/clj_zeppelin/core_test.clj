@@ -1,6 +1,6 @@
 (ns clj-zeppelin.core-test
   (:require [clojure.test :refer :all]
-;            [docker.fixture :as docker]
+            [docker.fixture :as docker]
             [org.httpkit.client :as http]
             [clj-zeppelin.core :refer :all]
             ))
@@ -17,18 +17,18 @@
      (println " calling get, resp is " (:body resp) " host " host)
      resp)))
 
-;(use-fixtures :once
-;  (docker/new-fixture {:cmd ["docker" "run" "-d" "-p" "8080:8080"  "apache/zeppelin:0.8.0"]
-;                       :sleep 20000
-;                       :init-fn (fn [component]
-;                                  (reset! fixture-response
-;                                          (component-http-get (:host component))))}))
-;
-; ;;did the init-fn interact with the fixture?
-;(deftest test-fixture-init
-;  (let [resp (:status @fixture-response)]
-;    (println " got response " resp)
-;    (is (= 200 resp))))
+(use-fixtures :once
+  (docker/new-fixture {:cmd ["docker" "run" "-d" "-p" "8080:8080"  "apache/zeppelin:0.8.0"]
+                       :sleep 20000
+                       :init-fn (fn [component]
+                                  (reset! fixture-response
+                                          (component-http-get (:host component))))}))
+
+ ;;did the init-fn interact with the fixture?
+(deftest test-fixture-init
+  (let [resp (:status @fixture-response)]
+    (println " got response " resp)
+    (is (= 200 resp))))
 
 (deftest test-list-notes
   (let [resp (list-notes "http://localhost:8080")
