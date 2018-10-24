@@ -5,8 +5,6 @@
             [clj-zeppelin.core :refer :all]
             ))
 
-
-
  ;;prove interaction with fixture by init-fn
 (def fixture-response (atom nil))
 
@@ -132,7 +130,45 @@
               ))))
  
 
-;;test-run-paragraph-synchronously
+(defn create-para-helper-sync
+  [note-id]
+  (let [para-id (create-paragraph! nbserver1 note-id (-> {:title "intro"
+                                                          :text  "%spark.pyspark
+def nth_prime_number(n):
+    # initial prime number list
+    prime_list = [2]
+    # first number to test if prime
+    num = 3
+    # keep generating primes until we get to the nth one
+    while len(prime_list) < n:
+
+        # check if num is divisible by any prime before it
+        for p in prime_list:
+            # if there is no remainder dividing the number
+            # then the number is not a prime
+            if num % p == 0:
+                # break to stop testing more numbers, we know it's not a prime
+                break
+
+        # if it is a prime, then add it to the list
+        # after a for loop, else runs if the break command has not been given
+        else:
+            # append to prime list
+            prime_list.append(num)
+
+        # same optimization you had, don't check even numbers
+        num += 2
+
+    # return the last prime number generated
+    return prime_list[-1]
+nth_prime_number(10000)
+"}))
+        para-status (get-paragraph-status nbserver1 note-id para-id)]
+    {:paragraph-id para-id :paragraph-status para-status}))
+
+
+
+;test-run-paragraph-synchronously
 (deftest test-para-sync
     (let [ret-ids (create-note-helper nbserver1)
    note-id (:created-note-id ret-ids)
@@ -140,7 +176,7 @@
    x (some #{note-id} return-ids)]
      (testing "note id created or not"
        (is x))
-       (let [para-id-sts (create-para-helper note-id)
+       (let [para-id-sts (create-para-helper-sync note-id)
            para-id (:paragraph-id para-id-sts)
            para-status (:paragraph-status para-id-sts)]
          (testing "paragraph-id returned or not"
@@ -148,18 +184,37 @@
         (testing "paragraph status check"
             (is (= "READY" (:status para-status))))
         (let [sync-sts (run-paragraph-sync nbserver1 note-id para-id)]
-              (testing "check status of run paragraph synchronously"
-                 (is (= "SUCCESS" (:code sync-sts))))))))
+;        (println (:code sync-sts))))))
+          (testing "check status of run paragraph synchronously"
+                 (is (= "SUCCESS" (:code sync-sts))))
+          ))))
 
-              
-(defn create-delete-fixture
-[f]
-(create-note-helper nbserver1)
-(f)
-(delete-note)
-)
 
-(clojure.test/use-fixtures :once create-delete-fixture)
+ ;test status-run-para-sync
+ (defn status-run-para-sync
+   []
+   (let [ret-ids (create-note-helper nbserver1)
+   note-id (:created-note-id ret-ids)
+   para-id (:paragraph-id (create-para-helper-sync note-id))]
+  (def f 
+  (future 
+  (run-paragraph-sync nbserver1 note-id para-id)
+  ))
+  (get-paragraph-status nbserver1 note-id para-id)
+  (println @f)
+  ))
 
-;to run all the tests
-;(clojure.test/run-tests)
+ 
+  (defn create-delete-fixture
+  [f]
+  (create-note-helper nbserver1)
+  (f)
+  (delete-note)
+  )
+  
+  (clojure.test/use-fixtures :once create-delete-fixture)
+
+  ;to run all the tests
+;  (clojure.test/run-tests)
+
+
