@@ -17,7 +17,7 @@
 
 (use-fixtures :once
   (docker/new-fixture {:cmd ["docker" "run" "-d" "-p" "8080:8080"  "apache/zeppelin:0.8.0"]
-                       :sleep 20000
+                       :sleep 40000
                        :init-fn (fn [component]
                                   (reset! fixture-response
                                           (component-http-get (:host component))))}))
@@ -125,6 +125,7 @@
         (testing "paragraph status check"
             (is (= "READY" (:status para-status))))
             (let [async-sts (run-paragraph-async nbserver1 note-id para-id)]
+             (println " async status " (get-paragraph-status nbserver1 note-id para-id))
               (testing "check status of run paragraph asynchronously"
                  (is (= "OK" async-sts)))
               ))))
@@ -133,7 +134,7 @@
 (defn create-para-helper-sync
   [note-id]
   (let [para-id (create-paragraph! nbserver1 note-id (-> {:title "intro"
-                                                          :text  "%spark.pyspark
+                                                          :text  "%python
 def nth_prime_number(n):
     # initial prime number list
     prime_list = [2]
@@ -161,7 +162,7 @@ def nth_prime_number(n):
 
     # return the last prime number generated
     return prime_list[-1]
-nth_prime_number(10000)
+nth_prime_number(100)
 "}))
         para-status (get-paragraph-status nbserver1 note-id para-id)]
     {:paragraph-id para-id :paragraph-status para-status}))
@@ -191,18 +192,18 @@ nth_prime_number(10000)
 
 
  ;test status-run-para-sync
- (defn status-run-para-sync
+(deftest status-run-para-sync
    []
    (let [ret-ids (create-note-helper nbserver1)
    note-id (:created-note-id ret-ids)
-   para-id (:paragraph-id (create-para-helper-sync note-id))]
-  (def f 
-  (future 
-  (run-paragraph-sync nbserver1 note-id para-id)
-  ))
-  (get-paragraph-status nbserver1 note-id para-id)
-  (println @f)
-  ))
+   para-id (:paragraph-id (create-para-helper-sync note-id))
+   f (future (run-paragraph-sync nbserver1 note-id para-id))]
+  (doseq [i (range 20)]
+    (do (Thread/sleep 1000)
+     (println " ith " i " iteration, result " (get-paragraph-status nbserver1 note-id para-id))))
+  (println " future result completed" @f)
+  (is (= 541 (Integer/parseInt (.replace (-> @f :msg first :data) "\n" ""))))
+  (println " last " " iteration, result " (get-paragraph-status nbserver1 note-id para-id))))
 
  
   (defn create-delete-fixture
@@ -212,7 +213,7 @@ nth_prime_number(10000)
   (delete-note)
   )
   
-  (clojure.test/use-fixtures :once create-delete-fixture)
+  ;(clojure.test/use-fixtures :once create-delete-fixture)
 
   ;to run all the tests
 ;  (clojure.test/run-tests)
