@@ -130,6 +130,7 @@
         (testing "paragraph status check"
             (is (= "READY" (:status para-status))))
             (let [async-sts (run-paragraph-async nbserver1 note-id para-id)]
+             (println " async status " (get-paragraph-status nbserver1 note-id para-id))
               (testing "check status of run paragraph asynchronously"
                  (is (= "OK" async-sts)))
               )))
