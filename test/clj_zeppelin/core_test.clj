@@ -17,7 +17,7 @@
 
 (use-fixtures :once
   (docker/new-fixture {:cmd ["docker" "run" "-d" "-p" "8080:8080"  "apache/zeppelin:0.8.0"]
-                       :sleep 20000
+                       :sleep 40000
                        :init-fn (fn [component]
                                   (reset! fixture-response
                                           (component-http-get (:host component))))}))
@@ -27,6 +27,7 @@
   (let [resp (:status @fixture-response)]
     (println " got response " resp)
     (is (= 200 resp))))
+
 
 (deftest test-list-notes
   (let [resp (list-notes "http://localhost:8080")
@@ -62,7 +63,9 @@
   (let [note-id (create-note-helper nbserver1)
    x (some #{(:created-note-id note-id)} (:retrieved-note-ids note-id))]
       (testing "note-id present in the returned list of ids or absent"
-        (is x))))
+        (is x)
+        ))
+  (delete-note))
 
 
 ;;test-delete-note
@@ -106,7 +109,9 @@
             (is (= "READY" (:status para-status))))
         (let [res (:text (get-paragraph-info nbserver1 note-id para-id))]
             (testing "paragraph content check"
-              (is (= "20"  res)))))))
+              (is (= "20"  res))
+              ))))
+  (delete-note))
      
   
 ;;test-run-paragraph-asynchronously
@@ -127,13 +132,14 @@
             (let [async-sts (run-paragraph-async nbserver1 note-id para-id)]
               (testing "check status of run paragraph asynchronously"
                  (is (= "OK" async-sts)))
-              ))))
+              )))
+  (delete-note))
  
 
 (defn create-para-helper-sync
   [note-id]
   (let [para-id (create-paragraph! nbserver1 note-id (-> {:title "intro"
-                                                          :text  "%spark.pyspark
+                                                          :text  "%python
 def nth_prime_number(n):
     # initial prime number list
     prime_list = [2]
@@ -161,60 +167,37 @@ def nth_prime_number(n):
 
     # return the last prime number generated
     return prime_list[-1]
-nth_prime_number(10000)
+nth_prime_number(100)
 "}))
         para-status (get-paragraph-status nbserver1 note-id para-id)]
     {:paragraph-id para-id :paragraph-status para-status}))
 
 
-
-;test-run-paragraph-synchronously
-(deftest test-para-sync
-    (let [ret-ids (create-note-helper nbserver1)
+(deftest status-run-para-sync
+  (let [ret-ids (create-note-helper nbserver1)
    note-id (:created-note-id ret-ids)
    return-ids (:retrieved-note-ids ret-ids)
    x (some #{note-id} return-ids)]
      (testing "note id created or not"
-       (is x))
+      (is x))
        (let [para-id-sts (create-para-helper-sync note-id)
            para-id (:paragraph-id para-id-sts)
            para-status (:paragraph-status para-id-sts)]
          (testing "paragraph-id returned or not"
-          (is para-id))
-        (testing "paragraph status check"
-            (is (= "READY" (:status para-status))))
-        (let [sync-sts (run-paragraph-sync nbserver1 note-id para-id)]
-;        (println (:code sync-sts))))))
-          (testing "check status of run paragraph synchronously"
-                 (is (= "SUCCESS" (:code sync-sts))))
-          ))))
-
-
- ;test status-run-para-sync
- (defn status-run-para-sync
-   []
-   (let [ret-ids (create-note-helper nbserver1)
-   note-id (:created-note-id ret-ids)
-   para-id (:paragraph-id (create-para-helper-sync note-id))]
-  (def f 
-  (future 
-  (run-paragraph-sync nbserver1 note-id para-id)
-  ))
-  (get-paragraph-status nbserver1 note-id para-id)
-  (println @f)
-  ))
-
- 
-  (defn create-delete-fixture
-  [f]
-  (create-note-helper nbserver1)
-  (f)
-  (delete-note)
-  )
+         (is para-id))
+         (testing "paragraph status check"
+          (is (= "READY" (:status para-status))))
+         
+;         test status run-para-sync
+          (let [f (future (run-paragraph-sync nbserver1 note-id para-id))]
+           (doseq [i (range 20)]
+            (do (Thread/sleep 1000)
+            (println " ith " i " iteration, result " (get-paragraph-status nbserver1 note-id para-id))))
+           (println " future result completed" @f)
+           (testing "check output status of run paragraph synchronously"
+           (is (= 541 (Integer/parseInt (.replace (-> @f :msg first :data) "\n" "")))))
+           (println " last " " iteration, result " (get-paragraph-status nbserver1 note-id para-id)))))
+           (delete-note))
   
-  (clojure.test/use-fixtures :once create-delete-fixture)
-
-  ;to run all the tests
-;  (clojure.test/run-tests)
 
 
