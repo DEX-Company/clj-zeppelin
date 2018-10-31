@@ -11,28 +11,25 @@ A Clojure library for managing [Zeppelin](https://zeppelin.apache.org) notebooks
 #create-note)
 *   [**list-notes**](
 #list-notes)
-
 *   [**delete-note!**](
-#delete)
+#delete-note)
 *   [**create-paragraph!**](
-#create-para)
+#create-paragraph)
 *   [**run-paragraph-async**](
-#run-para-async)
+#run-paragraph-async)
 *   [**run-paragraph-sync**](
-#run-para-sync)
+#run-paragraph-sync)
 *   [**get-paragraph-status**](
-#get-para-sts)
+#get-paragraph-status)
 *   [**get-paragraph-info**](
-#get-para-info)
+#get-paragraph-info)
 *   [**run-all-paragraphs**](
-#run-para)
-
+#run-all-paragraphs)
 
 ***
 
 
-
-* ### <a name= "create-note" ></a> create-note!  
+## create-note! 
 _This POST method creates a new note and returns the id of the newly created note._
 
 * Function call :<br> <pre>
@@ -41,8 +38,7 @@ _This POST method creates a new note and returns the id of the newly created not
 
 * Input fields : <br><pre>
               **notebook-server-url** - Zeppelin server url <br>
-              **payload** - name of the new note to be created  without paragraph - {:name "Ocean Notebook"}                          
-&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- name of the new note to be created  with paragraph - {:name "Ocean Notebook"} :paragraphs [{:title "intro" :text "Hello world"}]}  
+              **payload** - The payload is a map with (compulsory) key :name (which is the name of the notebook), and optional key :paragraphs, which is a list of paragraphs. Each paragraph is a map with keys :title and :text. 
 </pre>
 
 * Example :<br><pre>
@@ -50,11 +46,11 @@ _This POST method creates a new note and returns the id of the newly created not
 </pre>
 
 * Output :<br><pre>
-        2DTW93XQ9
+        2DTW93XQ9 is the id of the created note.
 </pre>
 
 ***
-* ### <a name= "list-notes" ></a>  list-notes  <br>
+## list-notes 
 
 _This GET method returns a JSON array containing the name and id of all the available notes in the zeppelin server._
 
@@ -70,17 +66,14 @@ _This GET method returns a JSON array containing the name and id of all the avai
 </pre>
 
 * Output : <pre>
-        {:status "OK", :message "", :body  [{:name "About this Build", :id "2BTRWA9EV"} {:name    "Zeppelin Tutorial/Basic 
-        Features (Spark)", :id "2A94M5J1Z"} {:name  "Zeppelin Tutorial/Matplotlib (Python • PySpark)", :id "2C2AUG798"} 
-        {:name  "Zeppelin Tutorial/R  (SparkR)", :id "2BWJFTXKJ"} {:name  "Zeppelin Tutorial/Using Flink for batch 
-        processing",:id "2C35YU814"} {:name  "ZeppelinTutorial/Using Mahout", :id "2BYEZ5EVK"} {:name  "Zeppelin 
-        Tutorial/Using Pig for querying data",:id "2C57UKYWR"}]}
+        {:status "OK", :message "", :body  [{:name "Zeppelin Tutorial/Basic Features (Spark)", :id "2A94M5J1Z"}]}
 </pre>
 
 
 ***
 
-* ### <a name= "delete" ></a>  delete-note!  <br/>
+## delete-note! 
+
 _This DELETE method deletes a note on the zeppelin server by the given note id and returns a JSON array containing status._
 * Function call : <br><pre>
                (delete-note! notebook-server-url note-id)
@@ -100,8 +93,7 @@ _This DELETE method deletes a note on the zeppelin server by the given note id a
 </pre>
 
 ***
-
-* ### <a name= "create-para" ></a> create-paragraph! 
+## create-paragraph! 
 
 _This POST method adds a new paragraph to an existing note and returns id of the newly created paragraph._
 
@@ -120,12 +112,12 @@ _This POST method adds a new paragraph to an existing note and returns id of the
 </pre>
 
 * Output : <br><pre>
-        20181029-070332_2137251371
+        20181029-070332_2137251371 is the id of the created paragraph.
 </pre>
 
 ***
 
-* ### <a name= "run-para-async" ></a> run-paragraph-async 
+## run-paragraph-async 
 
 _This POST method runs the paragraph asynchronously by given note and paragraph id and returns an OK message._
 
@@ -149,7 +141,7 @@ _This POST method runs the paragraph asynchronously by given note and paragraph 
 
 ***
 
-* ### <a name= "run-para-sync" ></a>  run-paragraph-sync  
+## run-paragraph-sync  
  
 _This POST method runs the paragraph synchronously by given note and paragraph id and returns a JSON array containing SUCCESS or ERROR status, depending on the outcome of paragraph execution._
 
@@ -174,7 +166,7 @@ _This POST method runs the paragraph synchronously by given note and paragraph i
 
 ***
 
-* ### <a name= "get-para-sts" ></a> get-paragraph-status 
+## get-paragraph-status 
 
 _This GET method gets the status of a single paragraph by the given note and paragraph id. The returned JSON array contains  the paragraph id, paragraph status, paragraph finish date, paragraph start date._
 
@@ -200,7 +192,7 @@ _This GET method gets the status of a single paragraph by the given note and par
 ***
 
 
-* ### <a name= "get-para-info" ></a>  get-paragraph-info <br/>
+##  get-paragraph-info 
 _This GET method retrieves an existing paragraph's information using the given id. The returned JSON array contains information about the paragraph._
 
 * Function call :<br><pre>
@@ -228,7 +220,7 @@ _This GET method retrieves an existing paragraph's information using the given i
 
 ***
 
-* ### <a name= "run-para" ></a>  run-all-paragraphs 
+## run-all-paragraphs 
 
 _This POST method runs all paragraphs in the specified note and returns a status message._
 
