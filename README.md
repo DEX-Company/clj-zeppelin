@@ -2,7 +2,18 @@
 
 A Clojure library for managing [Zeppelin](https://zeppelin.apache.org) notebooks using the Zeppelin [Notebook REST API](https://zeppelin.apache.org/docs/0.8.0/usage/rest_api/notebook.html).
 
+## Documentation
 
+* [API](https://dex-company.github.io/clj-zeppelin/index.html)
+
+## Installation:
+
+* To install, add the following dependency to your project or build file:
+<pre>
+      [clj-zeppelin "0.1.0-SNAPSHOT"]
+</pre>
+
+## API Description
 
  The operations defined in this library are as follows :     
                                              
@@ -29,7 +40,7 @@ A Clojure library for managing [Zeppelin](https://zeppelin.apache.org) notebooks
 ***
 
 
-## create-note! 
+### create-note! 
 _This POST method creates a new note and returns the id of the newly created note._
 
 * Function call :<br> <pre>
@@ -50,7 +61,7 @@ _This POST method creates a new note and returns the id of the newly created not
 </pre>
 
 ***
-## list-notes 
+### list-notes 
 
 _This GET method returns a JSON array containing the name and id of all the available notes in the zeppelin server._
 
@@ -72,7 +83,7 @@ _This GET method returns a JSON array containing the name and id of all the avai
 
 ***
 
-## delete-note! 
+### delete-note! 
 
 _This DELETE method deletes a note on the zeppelin server by the given note id and returns a JSON array containing status._
 * Function call : <br><pre>
@@ -93,7 +104,7 @@ _This DELETE method deletes a note on the zeppelin server by the given note id a
 </pre>
 
 ***
-## create-paragraph! 
+### create-paragraph! 
 
 _This POST method adds a new paragraph to an existing note and returns id of the newly created paragraph._
 
@@ -117,7 +128,7 @@ _This POST method adds a new paragraph to an existing note and returns id of the
 
 ***
 
-## run-paragraph-async 
+### run-paragraph-async 
 
 _This POST method runs the paragraph asynchronously by given note and paragraph id and returns an OK message._
 
@@ -141,7 +152,7 @@ _This POST method runs the paragraph asynchronously by given note and paragraph 
 
 ***
 
-## run-paragraph-sync  
+### run-paragraph-sync  
  
 _This POST method runs the paragraph synchronously by given note and paragraph id and returns a JSON array containing SUCCESS or ERROR status, depending on the outcome of paragraph execution._
 
@@ -166,7 +177,7 @@ _This POST method runs the paragraph synchronously by given note and paragraph i
 
 ***
 
-## get-paragraph-status 
+### get-paragraph-status 
 
 _This GET method gets the status of a single paragraph by the given note and paragraph id. The returned JSON array contains  the paragraph id, paragraph status, paragraph finish date, paragraph start date._
 
@@ -192,7 +203,7 @@ _This GET method gets the status of a single paragraph by the given note and par
 ***
 
 
-##  get-paragraph-info 
+###  get-paragraph-info 
 _This GET method retrieves an existing paragraph's information using the given id. The returned JSON array contains information about the paragraph._
 
 * Function call :<br><pre>
@@ -220,7 +231,7 @@ _This GET method retrieves an existing paragraph's information using the given i
 
 ***
 
-## run-all-paragraphs 
+### run-all-paragraphs 
 
 _This POST method runs all paragraphs in the specified note and returns a status message._
 
@@ -251,12 +262,7 @@ _This POST method runs all paragraphs in the specified note and returns a status
 * Install [Leiningen](https://leiningen.org/) 
 * Run `lein test` should create the Zeppelin docker container and run the tests
 
-## Installation:
 
-* To install, add the following dependency to your project or build file:
-<pre>
-      [clj-zeppelin "0.1.0-SNAPSHOT"]
-</pre>
 
 ## License
 
