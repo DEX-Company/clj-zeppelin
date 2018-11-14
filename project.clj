@@ -12,5 +12,6 @@
                  ]
 
   :plugins [[lein-codox "0.10.5"]]
+  :codox {:output-path "docs"}
   :profiles {:test {:dependencies [[docker-fixture "0.1.2"]]}}
   )
