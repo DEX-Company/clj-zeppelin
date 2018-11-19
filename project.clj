@@ -11,8 +11,7 @@
                  [com.taoensso/timbre "4.10.0"]
                  ]
 
-  :plugins [[lein-codox "0.10.5"]
-            [lein-release "1.0.9"]]
+  :plugins [[lein-codox "0.10.5"]]
   :codox {:output-path "docs"}
   :profiles {:test {:dependencies [[docker-fixture "0.1.2"]]}}
   )
