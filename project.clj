@@ -1,6 +1,6 @@
-(defproject clj-zeppelin "0.1.0-SNAPSHOT"
+(defproject clj-zeppelin "0.1.0"
   :description "Clojure library for managing Zeppelin notebooks"
-  :url "http://example.com/FIXME"
+  :url "https://github.com/DEX-Company/clj-zeppelin"
   :license {:name "Apache 2.0 License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
