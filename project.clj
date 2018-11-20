@@ -15,6 +15,8 @@
   :codox {:output-path "docs"}
   :profiles {:test {:dependencies [[docker-fixture "0.1.2"]]}}
   
+  :lein-release {:deploy-via :clojars}
+  
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version"
                    "leiningen.release/bump-version" "release"]
