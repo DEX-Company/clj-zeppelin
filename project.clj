@@ -1,4 +1,4 @@
-(defproject clj-zeppelin "0.1.7"
+(defproject clj-zeppelin "0.1.0-SNAPSHOT"
   :description "Clojure library for managing Zeppelin notebooks"
   :url "https://github.com/DEX-Company/clj-zeppelin"
   :license {:name "Apache 2.0 License"
