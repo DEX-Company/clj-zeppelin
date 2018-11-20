@@ -1,4 +1,4 @@
-(defproject clj-zeppelin "0.1.1"
+(defproject clj-zeppelin "0.1.0-SNAPSHOT"
   :description "Clojure library for managing Zeppelin notebooks"
   :url "https://github.com/DEX-Company/clj-zeppelin"
   :license {:name "Apache 2.0 License"
@@ -14,14 +14,5 @@
   :plugins [[lein-codox "0.10.5"]]
   :codox {:output-path "docs"}
   :profiles {:test {:dependencies [[docker-fixture "0.1.2"]]}}
-  
-  :lein-release {:deploy-via :clojars}
-  
-  :release-tasks [["vcs" "assert-committed"]
-                  ["change" "version"
-                   "leiningen.release/bump-version" "release"]
-                  ["vcs" "commit"]
-                  ["vcs" "tag"]
-                  ["deploy"]]
-  
+     
   )
