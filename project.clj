@@ -14,4 +14,12 @@
   :plugins [[lein-codox "0.10.5"]]
   :codox {:output-path "docs"}
   :profiles {:test {:dependencies [[docker-fixture "0.1.2"]]}}
+  
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version"
+                   "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag"]
+                  ["deploy"]]
+  
   )
