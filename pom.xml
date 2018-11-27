@@ -3,10 +3,10 @@
   <groupId>clj-zeppelin</groupId>
   <artifactId>clj-zeppelin</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <name>clj-zeppelin</name>
   <description>Clojure library for managing Zeppelin notebooks</description>
-  <url>http://example.com/FIXME</url>
+  <url>https://github.com/DEX-Company/clj-zeppelin</url>
   <licenses>
     <license>
       <name>Apache 2.0 License</name>
@@ -17,7 +17,7 @@
     <url>https://github.com/DEX-Company/clj-zeppelin</url>
     <connection>scm:git:git://github.com/DEX-Company/clj-zeppelin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/DEX-Company/clj-zeppelin.git</developerConnection>
-    <tag>95adb4f1bdd89976c02b6a6d64cab91edd06ee12</tag>
+    <tag>00703daefaded0675ecc677b560f25229282f20f</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -50,16 +50,6 @@
     <repository>
       <id>clojars</id>
       <url>https://repo.clojars.org/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-    <repository>
-      <id>clj-zeppelin</id>
-      <url>https://clojars.org/repo</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
