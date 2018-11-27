@@ -35,5 +35,7 @@ target
 transaction-logs
 secrets.yml
 .sts4-cache
+*.ini
+CHANGELOG.md
 
 
