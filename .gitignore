@@ -37,3 +37,4 @@ secrets.yml
 .sts4-cache
 *.ini
 CHANGELOG.md
+pom.xml.asc
