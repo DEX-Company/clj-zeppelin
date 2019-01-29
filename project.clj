@@ -9,6 +9,7 @@
                  [http-kit "2.2.0"]
                  ;;logging
                  [com.taoensso/timbre "4.10.0"]
+                 [cheshire "5.8.1"]
                  ]
 
   :plugins [[lein-codox "0.10.5"]]

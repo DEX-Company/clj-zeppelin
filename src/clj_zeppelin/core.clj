@@ -2,12 +2,14 @@
   (:require [clojure.data.json :as json]
             [clojure.walk :refer [keywordize-keys stringify-keys]]
             [clj-zeppelin.note :refer [paragraph-raw note finalize]]
-            [org.httpkit.client :as ht]))
+            [org.httpkit.client :as ht]
+           ))
 
 (defn- kwdize-resp
   "keywordize the response when successful"
   [resp]
   (let [istr (-> resp :body )]
+    (println istr)
     (try
       (do 
         (clojure.walk/keywordize-keys (json/read-str istr)))
@@ -29,9 +31,12 @@
   [notebook-api-url]
   (let [resp @(ht/request {:url notebook-api-url
                            :method :get})]
+    (println resp)
     (if (:error resp)
       (throw (ex-info " error listing notes " resp))
-      (kwdize-resp resp))))
+      (kwdize-resp resp))
+    )
+  )
 
 (defn create-note!
   "
@@ -43,7 +48,8 @@
   [notebook-api-url payload]
   (let [resp @(ht/request {:url notebook-api-url
                            :method :post
-                           :body (finalize payload)})]
+                           :body (finalize payload)
+                           })]
     (if (:error resp)
       (throw (ex-info " error creating note notes " resp))
       (-> resp :body json/read-str (get "body")))))
@@ -68,8 +74,14 @@
 
   Returns the id of the imported note
   "
-  []
-  nil)
+  [notebook-api-url note_json_url]
+  (let [resp @(ht/request {:url (str notebook-api-url "import")
+                           :method :post
+                           :body (finalize (json/read-str (slurp note_json_url):key-fn keyword))})]
+     (if (:error resp)
+      (throw (ex-info " error creating note notes " resp))
+      (-> resp :body json/read-str (get "body"))
+      )))
 
 (defn run-all-paragraphs
   "runs all the paragraphs
@@ -147,3 +159,6 @@
     (if (:error resp)
       (throw (ex-info " error running paragraph " resp))
       (-> resp kwdize-resp :body))))
+
+
+

@@ -37,6 +37,7 @@
 
 (defn create-note-helper
   [zepl]
+  (println zepl)
   (let [note-id (create-note! zepl {:name "clojure note12"})
        ids (map :id (get-in (list-notes zepl) [:body]))]
    {:created-note-id note-id :retrieved-note-ids ids})) 
@@ -197,4 +198,8 @@ nth_prime_number(100)
            (delete-note @api-url))
   
 
-
+(deftest import-note-test
+  (let [notebook-url @api-url "https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/2DJVH9H46/note.json"]
+  (testing "import note successful or not"
+      (is (not (nil? (import-note! @api-url notebook_url)))))))
+  
