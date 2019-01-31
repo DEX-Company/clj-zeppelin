@@ -1,4 +1,4 @@
-(defproject clj-zeppelin "0.1.0-SNAPSHOT"
+(defproject clj-zeppelin "0.1.1-SNAPSHOT"
   :description "Clojure library for managing Zeppelin notebooks"
   :url "http://example.com/FIXME"
   :license {:name "Apache 2.0 License"
