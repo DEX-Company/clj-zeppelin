@@ -23,7 +23,7 @@
                                   (reset! fixture-response
                                           (component-http-get (:host component))))}))
 
- ;;did the init-fn interact with the fixture?
+; ;;did the init-fn interact with the fixture?
 (deftest test-fixture-init
   (let [resp (:status @fixture-response)]
     (is (= 200 resp))))
@@ -199,7 +199,11 @@ nth_prime_number(100)
   
 
 (deftest import-note-test
-  (let [notebook-url @api-url "https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/2DJVH9H46/note.json"]
-  (testing "import note successful or not"
-      (is (not (nil? (import-note! @api-url notebook_url)))))))
+  (let [notebook-url "https://raw.githubusercontent.com/DEX-Company/invoke_zeppelin/master/scoring/examples/iris/scoring.json?token=AAFb9KZNR-qrs0OOEUrJXGIldJqe5eJkks5cWUQLwA%3D%3D"]
+  (testing "url empty "
+           (is (> (count (slurp notebook-url)) 1 ))           )
+  (let [import-output (import-note! @api-url notebook-url)]
+    (testing "import notebook"           
+      (is (not (nil? import-output))))))
+  (delete-note @api-url))
   
