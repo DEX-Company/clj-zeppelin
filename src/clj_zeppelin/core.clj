@@ -68,8 +68,7 @@
 (defn json-convert
   [url-data]
   (let [finalize-data (finalize (slurp url-data))
-        jsondata (json/read-str finalize-data)
-        ]
+        jsondata (json/read-str finalize-data)]
        jsondata))   
 
 (defn import-note!
@@ -80,14 +79,15 @@
   Returns the id of the imported note
   "
   [notebook-api-url note_json_url]
+  (try
   (let [resp @(ht/request {:url (str notebook-api-url "import")
                            :method :post
                            :body (json-convert note_json_url )
                            })]
-     (if (:error resp)
-      (throw (ex-info " error creating note notes " resp))
-      (-> resp :body json/read-str (get "body"))
-      )))
+     
+      (-> resp :body json/read-str (get "body")))
+   (catch Exception e (println (str "caught exception: " (.toString e))))
+      ))
 
 (defn run-all-paragraphs
   "runs all the paragraphs
