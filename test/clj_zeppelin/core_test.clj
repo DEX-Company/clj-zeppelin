@@ -1,6 +1,6 @@
 (ns clj-zeppelin.core-test
   (:require [clojure.test :refer :all]
-;            [docker.fixture :as docker]
+            [docker.fixture :as docker]
             [org.httpkit.client :as http]
             [clj-zeppelin.core :refer :all]
             ))
@@ -16,12 +16,12 @@
      (reset! api-url (-> resp :opts :url))
      resp)))
 
-#_(use-fixtures :once
-   (docker/new-fixture {:cmd ["docker" "run" "-d" "-p" "8080:8080"  "apache/zeppelin:0.8.0"]
-                        :sleep 40000
-                        :init-fn (fn [component]
-                                   (reset! fixture-response
-                                           (component-http-get (:host component))))}))
+(use-fixtures :once
+  (docker/new-fixture {:cmd ["docker" "run" "-d" "-p" "8080:8080"  "apache/zeppelin:0.8.0"]
+                       :sleep 40000
+                       :init-fn (fn [component]
+                                  (reset! fixture-response
+                                          (component-http-get (:host component))))}))
 
 ; ;;did the init-fn interact with the fixture?
 (deftest test-fixture-init

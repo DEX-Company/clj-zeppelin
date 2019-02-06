@@ -1,1 +1,0 @@
-{"clj-zeppelin.core-test" ["test-list-notes" "test-create-para" "test-fixture-init" "status-run-para-sync" "test-delete-note" "test-para-async" "test-create-note" "import-note-test"]}
