@@ -17,6 +17,7 @@
 .project
 .recommenders
 .settings
+.lein-failures
 /build
 /code
 MANIFEST.MF

@@ -23,7 +23,7 @@
                                   (reset! fixture-response
                                           (component-http-get (:host component))))}))
 
- ;;did the init-fn interact with the fixture?
+; ;;did the init-fn interact with the fixture?
 (deftest test-fixture-init
   (let [resp (:status @fixture-response)]
     (is (= 200 resp))))
@@ -37,9 +37,9 @@
 
 (defn create-note-helper
   [zepl]
-  (let [note-id (create-note! zepl {:name "clojure note12"})
-       ids (map :id (get-in (list-notes zepl) [:body]))]
-   {:created-note-id note-id :retrieved-note-ids ids})) 
+   (let [note-id (create-note! zepl {:name "clojure note12"})
+        ids (map :id (get-in (list-notes zepl) [:body]))]
+    {:created-note-id note-id :retrieved-note-ids ids})) 
 
 
 ;;delete-note used in fixture function
@@ -197,4 +197,14 @@ nth_prime_number(100)
            (delete-note @api-url))
   
 
-
+(deftest import-note-test
+  (let [notebook-url "https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/2ANT56EHN/note.json"]
+  (testing "url empty "
+           (is (> (count (slurp notebook-url)) 1 ))           )
+  (let [import-output (import-note! @api-url notebook-url)]
+    (println "hi")
+    (testing "import notebook"           
+      (is (not (nil? import-output))))))
+  (delete-note @api-url)
+  )
+  
